@@ -1,0 +1,6 @@
+---
+- name: Yggdrasil ansible-controller
+  hosts: ansible_controller
+  become: true
+  roles:
+    - ansible_controller

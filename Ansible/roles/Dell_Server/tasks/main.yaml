@@ -1,0 +1,9 @@
+---
+- name: Install ProxMox OS
+  dellemc.openmanage.idrac_os_deployment:
+    idrac_ip:
+    idrac_user:
+    idrac_password:
+    iso_image:
+    share_name:
+  when: hypervisor_os == proxmox
