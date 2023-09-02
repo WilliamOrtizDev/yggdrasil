@@ -1,6 +1,7 @@
 ---
 - name: Yggdrasil Pre-Check
   hosts: localhost
+  connection: local
   vars_prompt:
     - name: setup_questions
       prompt: 'What Hypervisor are you using'
@@ -14,8 +15,23 @@
         fail_msg: "You must update Ansible to at least 2.10.0 to use this role.\n"
 
   tasks:
-    - name: set vars_prompt as persistent fact
-      ansible.builtin.lineinfile:
-        path: /path/to/file
-        line: 'test'
-        regexp: '^test$'
+    - name: Make ansible directories
+      ansible.builtin.file:
+        path: /etc/ansible/facts.d
+        state: directory
+        recurse: true
+      become: true
+
+    - name: place ansible config
+      ansible.builtin.template:
+        src: templates/localsystems.fact.j2
+        dest: /etc/ansible/facts.d/localsystems.fact
+        mode: 493
+      become: true
+
+    - name: place ansible hosts template file
+      ansible.builtin.template:
+        src: templates/hosts.fact.j2
+        dest: /etc/ansible/facts.d/hosts.fact
+        mode: 493
+      become: true
