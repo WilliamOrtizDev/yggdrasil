@@ -1,0 +1,28 @@
+---
+- name: Deploy ProxMox VM
+  community.general.proxmox_kvm:
+    node: "{{ _node_ }}"
+    api_user: "{{ _api_user_ }}"
+    api_password: "{{ _api_password_ }}"
+    api_host: "{{ _api_host_ }}"
+    name: "{{ item.value.name }}"
+    storage: "{{ item.value.storage | default(vms_def.storage) }}"
+    net:
+      net0: "{{ item.value.network_device | default(vms_def.network_device) }}"
+  loop_control:
+    pause: 5
+  register: created_vms_pve
+  loop: "{{ vms |dict2items }}"
+
+- name: Start ProxMox VM
+  community.general.proxmox_kvm:
+    node: "{{ _node_ }}"
+    api_user: "{{ _api_user_ }}"
+    api_password: "{{ api_password }}"
+    api_host: "{{ _api_host_ }}"
+    name: "{{ item.item.value.name }}"
+    state: started
+  loop_control:
+    label: "{{ item.item.key }}"
+  loop: "{{ started_vms_pve.results }}"
+  register: started_vms_pve
