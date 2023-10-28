@@ -1,6 +1,13 @@
 ---
 - name: Yggdrasil ansible-controller
-  hosts: ansible_controller
+  hosts: localhost
   become: true
+  pre_tasks:
+  - name: Make sure ansible is at least version 2.10 or greater
+    ansible.builtin.assert:
+      that:
+        - ansible_version.full is version('2.10.0', '>=')
+      quiet: true
+      fail_msg: "You must update Ansible to at least 2.10.0 to use this role.\n"
   roles:
     - ansible_controller

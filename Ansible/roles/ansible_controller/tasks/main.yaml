@@ -1,22 +1,14 @@
 ---
-- name: Update Package cache (apt/Ubuntu)
+- name: Update and upgrade Ubuntu
   ansible.builtin.apt:
+    upgrade: dist
     update_cache: true
-  changed_when: false
-  when: ansible_distribution == "Debian"
+  when: inventory_host in groups.anisble_controller
 
-- name: Update Package cache (dnf/RHEL)
-  ansible.builtin.dnf:
-    update_cache: true
-    name: '*'
-  changed_when: false
-  when: ansible_os_family == "RedHat"
-
-- name: Update Package cache (pacman/Arch)
-  community.general.pacman:
-    update_cache: true
-  changed_when: false
-  when: ansible_os_family == "Archlinux"
+- name: Install Hashicorp GPG Key
+  ansible.builtin.apt_key:
+    url: https://apt.releases.hashicorp.com/gpg
+    state: present
 
 - name: Install needed dependencies
   ansible.builtin.package:
@@ -26,12 +18,11 @@
     - terraform
     - vault
     - packer
-    - docker
     - kubernetes
-    - vagrant
 
-- name: Download ProxMox ISO image
-  ansible.builtin.get_url:
-    url: "{{ proxmox_download }}"
-    dest: ~/iso_images
-    mode: '0600'
+- name: Clone dotfiles
+  ansible.builtin.git:
+    repo: https://github.com/x-Notorious/dotfiles
+    dest: ~/.dotfiles
+    version: master
+  become: false
