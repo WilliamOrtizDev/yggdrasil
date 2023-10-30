@@ -8,10 +8,10 @@ terraform {
 }                                                                                                                                                                                          
                                                                                                                                                                                            
 provider "vsphere" {                                                                                                                                                                       
-    user                 = "user"                                                                                                                                
-    password             = "password"                                                                                                                                                    
-    vsphere_server       = "hostname"                                                                                                                                                  
-    allow_unverified_ssl = true                                                                                                                                                            
+    user                 = var.vcenter_user
+    password             = var.vcenter_pass
+    vsphere_server       = var.vcenter_host                                                                                                                                                
+    allow_unverified_ssl = true                                                                                                                                                   
 }                                                                                                                                                                                          
                                                                                                                                                                                            
 data "vsphere_datacenter" "datacenter" {                                                                                                                                                   
